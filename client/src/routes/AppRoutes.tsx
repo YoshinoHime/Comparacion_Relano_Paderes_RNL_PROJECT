@@ -1,104 +1,23 @@
-import { Route, Routes } from "react-router-dom"
-import AppLayout from "../Layout/AppLayout"
-import FloatingLabelInput from "../components/input/FloatingLabelInput";
-import { useState } from "react";
-import FloatingLabelSelect from "../components/Select/FloatingLabelSelect";
-import { Table, TableBody, TableCell, TableHeader, TableRow } from "../components/Table/Index";
+import { Route, Routes } from "react-router-dom";
+import AppLayout from "../Layout/AppLayout";
+import GenderMainPage from "../pages/Genders/GenderMainPage";
+import EditGenderPage from "../pages/Genders/EditGenderPage";
+import DeleteGenderPage from "../pages/Genders/DeleteGenderPage";
+import UserMainPage from "../pages/User/UserMainPage";
 
-const SampleComponent = () => {
-  const [firstname, setFirstName] = useState ("");
-  const [lastname, setLastName] = useState ("");
-  const [birthdate, setBirthDate] = useState ("");
-  const [password, setPassword] = useState ("");
-  const [gender, setGender] = useState ("");
-     
-  const genders = [
-    {
-      value: '',
-      text: 'Select Gender',
-    },
-    {
-      value: 1,
-      text: 'Male',
-    }, {
-      value: 2,
-      text: 'Female',
-    }, {
-      value: 3,
-      text: 'Prefer Not to Say',
-    },
-  ]; 
-    
-  return (
-      <>
-        <h1 className="text-red-600">Hello World</h1>
-          <div className="mb-4">
-          <FloatingLabelInput label="First Name"
-          type="text" name="first_name" value={firstname} onChange={(e) => setFirstName(e.target.value)} required autoFocus/>
-          <p className="font-medium">First Name: {firstname}</p>
-        </div>
 
-        <div className="mb-4">
-          <FloatingLabelInput label="Last Name" type="text" name="last_name" value={lastname} onChange={(e) => setLastName(e.target.value)} required/>
-          <p className="font-medium">Last Name: {lastname}</p>
-        </div>
-
-        <div className="mb-4">
-          <FloatingLabelInput label="Birth Date"
-          type="date" name="birth_date" value={birthdate} onChange={(e) => setBirthDate(e.target.value)} />
-          <p className="font-medium">Birth Date: {birthdate}</p>
-        </div>
-
-        <div className="mb-4">
-          <FloatingLabelInput label="Password" 
-          type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
-          <p className="font-medium">Password: {password}</p>
-        </div>
-
-        <div className="mb-4">
-          <FloatingLabelSelect label="Gender" name="gender" value={gender} onChange={(e) => setGender(e.target.value)}> 
-          {genders.map((gender, index) => (
-            <option value={gender.value} key={index}>
-              {gender.text}
-            </option>
-          ))}
-        </FloatingLabelSelect>
-        <p className="font-medium">Gender: {gender}</p>
-      </div>
-      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
-        <div className="max-w-full max-h-[calc(100vh)] overflow-x-auto">
-          <Table>
-            <TableHeader className="border-b border-gray-100 bg-blue-600 text-white sticky top-0 z-30 text-xs">
-              <TableRow>
-                <TableCell isHeader className="px-5 py-3 font-medium text-center">No.</TableCell>
-                <TableCell isHeader className="px-5 py-3 font-medium text-start">Gender</TableCell>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {genders.map((gender, index) => (
-                <TableRow key={index}>
-                  <TableCell className="px-4 py-3 text-center">{gender.value}</TableCell>
-                  <TableCell className="px-4 py-4 text-start">{gender.text}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
-    </> 
-  );
-};
 
 const AppRoutes = () => {
   return (
-    <>
     <Routes>
-        <Route element={<AppLayout />}>
-          <Route path="/" element={<SampleComponent/> }/>
-        </Route> 
+      <Route element={<AppLayout />}>
+        <Route path="/" element={<GenderMainPage />} />
+        <Route path="/gender/edit" element={<EditGenderPage />} />
+        <Route path="/gender/delete" element={<DeleteGenderPage />} />
+        <Route path="/users" element={<UserMainPage />} />
+      </Route>
     </Routes>
-    </>
   );
 };
 
-export default AppRoutes
+export default AppRoutes;
