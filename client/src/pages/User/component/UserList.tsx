@@ -1,8 +1,51 @@
-import React from 'react';
-import { Table, TableBody, TableCell, TableHeader, TableRow } from "./components/Table";
+import { useEffect, useState, type FC } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead, 
+  TableHeader,
+  TableRow,
+} from "../../../components/Table";
+import UserService from "../../../services/UserService";
+import Spinner from "../../../components/Spinner/Spinner";
+import type { UserColumns } from "../../../interfaces/UserInterface";
+
+interface UserListProps {
+  onAddUser: () => void;
+  onEditUser: (user: UserColumns) => void;
+  onDeleteUser: (user: UserColumns) => void; 
+  refreshKey: boolean;
+}
+
+const UserList: FC<UserListProps> = ({ onAddUser, onEditUser, onDeleteUser, refreshKey }) => {
+  const [loadingUsers, setLoadingUsers] = useState(false);
+  const [users, setUsers] = useState<UserColumns[]>([]);
+
+  const handleLoadUsers = async () => {
+    try {
+      setLoadingUsers(true);
+      const res = await UserService.loadUsers();
+      if (res.status === 200) {
+        setUsers(res.data.users);
+      } else {
+        console.error("Unexpected status error occurred during loading users:", res.status);
+      }
+    } catch (error) {
+      console.error("Error loading users:", error);
+    } finally {
+      setLoadingUsers(false);
+    }
+  };
+
+  useEffect(() => {
+    handleLoadUsers();
+  }, [refreshKey]);
+
+  if (loadingUsers) return <Spinner />;
 
 const UserList = () => {
-  // Consolidated user data
+ 
   const users = [
     {
       user_id: 1,
@@ -62,30 +105,35 @@ const UserList = () => {
           <TableBody className="divide-y divide-gray-100 text-sm text-gray-500">
             {users.map((user) => (
               <TableRow className="hover:bg-gray-100" key={user.user_id}>
-                <TableCell className="px-4 py-3 text-center">{user.user_id}</TableCell>
-                <TableCell className="px-4 py-3 text-start">{user.first_name}</TableCell>
-                <TableCell className="px-4 py-3 text-start">{user.middle_name || "-"}</TableCell>
-                <TableCell className="px-4 py-3 text-start">{user.last_name}</TableCell>
-                <TableCell className="px-4 py-3 text-start">{user.suffix_name || "-"}</TableCell>
-                <TableCell className="px-4 py-3 text-start">{user.gender}</TableCell>
-                <TableCell className="px-4 py-3 text-start">{user.address}</TableCell>
-                <TableCell className="px-4 py-3 text-center">
-                  <div className="flex justify-center gap-4">
-                    <button type="button" className="text-green-600 font-medium hover:underline cursor-pointer">
-                      Edit
-                    </button>
-                    <button type="button" className="text-red-600 font-medium hover:underline cursor-pointer">
-                      Delete
-                    </button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-    </div>
-  );
-};
+  <TableCell className="px-4 py-3 text-start">
+  {handleUserFullNameFormat(user)}
+</TableCell>
+<TableCell className="px-4 py-3 text-start">
+  {user.gender.gender}
+</TableCell>
+<TableCell className="px-4 py-3 text-start">
+  {user.birth_date}
+</TableCell>
+<TableCell className="px-4 py-3 text-start">
+  {user.age}
+</TableCell>
+<TableCell className="px-4 py-3 text-center">
+  <div className="flex gap-4">
+    <button
+      type="button"
+      className="text-green-600 font-medium cursor-pointer hover:underline"
+      onClick={() => onEditUser(user)} 
+    >
+      Edit
+    </button>
+    <button
+      type="button"
+      className="text-red-600 font-medium cursor-pointer hover:underline"
+      onClick={() => onDeleteUser(user)} 
+    >
+      Delete
+    </button>
+  </div>
+</TableCell>
 
 export default UserList;
